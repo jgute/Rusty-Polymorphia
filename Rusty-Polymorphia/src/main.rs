@@ -2,16 +2,23 @@ mod adventurer;
 mod creature;
 mod room;
 mod maze;
+mod maze_builder;
 
 use adventurer::Adventurer;
 use creature::Creature;
 use maze::Maze;
+use maze_builder::MazeBuilder;
 use std::{thread, time::Duration};
 
 fn main() {
     let adventurer = Adventurer::new("Bilbo");
     let creature = Creature::new("Ogre");
-    let mut maze = Maze::new(adventurer, creature);
+    let mut maze = Maze::builder()
+    .num_rooms(4)
+    .moving_cost(0.25)
+    .add_adventurer(adventurer)
+    .add_creature(creature)
+    .build();
 
     println!("Welcome to the Maze of Polymorphia!");
     println!("An Adventurer and a Creature roam the maze...\n");
@@ -36,7 +43,7 @@ fn main() {
                     room.print_room();
                 }
             }
-            
+
             if maze.check_game_over() {
                 break;
             }

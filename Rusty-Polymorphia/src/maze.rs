@@ -3,11 +3,13 @@ use rand::Rng;
 use crate::adventurer::Adventurer;
 use crate::creature::Creature;
 use crate::room::Room;
+use crate::maze_builder::MazeBuilder;
+
 
 pub struct Maze {
     pub rooms: Vec<Room>,
-    num_rooms: usize,
-    moving_cost: f64,
+    pub num_rooms: usize,
+    pub moving_cost: f64,
 }
 
 impl Maze {
@@ -18,21 +20,14 @@ impl Maze {
     pub const OUT_OF_BOUNDS: isize = -1;
 
     pub fn new(adventurer: Adventurer,creature: Creature) -> Self {
-        let num_rooms = 4;
-        let mut rooms = vec![Room::new(); num_rooms];
-        let mut rng = rand::thread_rng();
+        Maze::builder()
+        .add_adventurer(adventurer)
+        .add_creature(creature)
+        .build()
+    }
 
-        let random_adventurer_room = rng.gen_range(0..num_rooms);
-        rooms[random_adventurer_room].set_adventurer(adventurer);
-
-        let random_creature_room = rng.gen_range(0..num_rooms);
-        rooms[random_creature_room].set_creature(creature);
-
-        Maze {
-            rooms,
-            num_rooms,
-            moving_cost: 0.25,
-        }
+    pub fn builder() -> MazeBuilder {
+        MazeBuilder::new()
     }
 
     fn one_or_negative_one(&self) -> isize {
@@ -73,7 +68,6 @@ impl Maze {
 
                 // Place adventurer in new room
                 self.rooms[new_index as usize].set_adventurer(adventurer);
-
                 break;
             }
         }
