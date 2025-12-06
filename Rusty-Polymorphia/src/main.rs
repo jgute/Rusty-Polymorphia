@@ -47,11 +47,8 @@ fn main() {
         println!("==================================================\n");
         round += 1;
 
-        // Slight pause to make the output readable
-        thread::sleep(Duration::from_millis(1200));
-
         // End condition if it drags too long
-        if round > 25 {
+        if round > 50 {
             println!("The maze grows silent... the hunt goes on forever.");
             break;
         }

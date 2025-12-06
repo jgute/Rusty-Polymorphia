@@ -38,3 +38,15 @@ impl Adventurer {
         );
     }
 }
+
+// Factory trait
+pub trait CharacterFactory {
+    fn create(name: &str) -> Self;
+}
+
+// Implement factory trait for Adventurer
+impl CharacterFactory for Adventurer {
+    fn create(name: &str) -> Self {
+        Self::new(name)
+    }
+}
