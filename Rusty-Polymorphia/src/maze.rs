@@ -6,8 +6,6 @@ use crate::room::Room;
 
 pub struct Maze {
     pub rooms: Vec<Room>,
-    pub adventurer: Adventurer,
-    pub creature: Creature,
     num_rooms: usize,
     moving_cost: f64,
 }
@@ -19,21 +17,19 @@ impl Maze {
     pub const SOUTHWEST: usize = 3;
     pub const OUT_OF_BOUNDS: isize = -1;
 
-    pub fn new(adventurer: Adventurer, creature: Creature) -> Self {
+    pub fn new(adventurer: Adventurer,creature: Creature) -> Self {
         let num_rooms = 4;
         let mut rooms = vec![Room::new(); num_rooms];
         let mut rng = rand::thread_rng();
 
         let random_adventurer_room = rng.gen_range(0..num_rooms);
-        rooms[random_adventurer_room].set_adventurer(adventurer.clone());
+        rooms[random_adventurer_room].set_adventurer(adventurer);
 
         let random_creature_room = rng.gen_range(0..num_rooms);
-        rooms[random_creature_room].set_creature(creature.clone());
+        rooms[random_creature_room].set_creature(creature);
 
         Maze {
             rooms,
-            adventurer,
-            creature,
             num_rooms,
             moving_cost: 0.25,
         }
@@ -50,27 +46,42 @@ impl Maze {
 
     pub fn move_adventurer(&mut self) {
         for i in 0..self.num_rooms {
-            if self.rooms[i].get_adventurer().is_some() {
+            if let Some(a_ref) = self.rooms[i].get_adventurer() {
+                // Clone the adventurer out of the room
+                let mut adventurer = a_ref.clone();
+
+                // Apply movement cost to the adventurer's health
+                let new_health = adventurer.get_health() - self.moving_cost;
+                adventurer.set_health(new_health);
+
+                // Remove from the old room
+                self.rooms[i].remove_adventurer();
+
+                if adventurer.get_health() <= 0.0 {
+                    // Adventurer dies from movement cost
+                    println!("The Adventurer has fallen! The Creature wins!");
+                    // Do NOT place them in a new room
+                    return;
+                }
+
+                // Compute new index
                 let dir = self.one_or_negative_one();
                 let mut new_index = (i as isize + dir) % self.num_rooms as isize;
                 if new_index < 0 {
                     new_index = (self.num_rooms - 1) as isize;
                 }
 
-                let adv_clone = self.adventurer.clone();
-                self.rooms[new_index as usize].set_adventurer(adv_clone);
-                self.rooms[i].remove_adventurer();
+                // Place adventurer in new room
+                self.rooms[new_index as usize].set_adventurer(adventurer);
+
                 break;
             }
         }
-
-        let new_health = self.adventurer.get_health() - self.moving_cost;
-        self.adventurer.set_health(new_health);
     }
 
     pub fn in_same_room(&self) -> bool {
-        self.rooms.iter().any(|r| {
-            r.get_adventurer().is_some() && r.get_creature().is_some()
+        self.rooms.iter().any(|room| {
+            room.get_adventurer().is_some() && room.get_creature().is_some()
         })
     }
 
@@ -87,5 +98,42 @@ impl Maze {
         println!("Southeast:");
         self.rooms[Self::SOUTHEAST].print_room();
         println!();
+    }
+
+    pub fn check_game_over(&self) -> bool {
+        let mut adventurer_dead = false;
+        let mut creature_dead = false;
+
+        for room in &self.rooms {
+            if let Some(a) = room.get_adventurer() {
+                if a.get_health() <= 0.0 {
+                    adventurer_dead = true;
+                }
+            }
+            if let Some(c) = room.get_creature() {
+                if c.get_health() <= 0.0 {
+                    creature_dead = true;
+                }
+            }
+        }
+
+        if adventurer_dead {
+            println!("The Adventurer has fallen! The Creature wins!");
+        }
+        if creature_dead {
+            println!("The Creature has been slain! The Adventurer triumphs!");
+        }
+
+        adventurer_dead || creature_dead
+    }
+
+    /// (Optional helper) Find which room currently has the adventurer.
+    pub fn adventurer_room_index(&self) -> Option<usize> {
+        for (i, room) in self.rooms.iter().enumerate() {
+            if room.get_adventurer().is_some() {
+                return Some(i);
+            }
+        }
+        None
     }
 }

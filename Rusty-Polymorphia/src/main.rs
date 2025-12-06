@@ -36,17 +36,8 @@ fn main() {
                     room.print_room();
                 }
             }
-
-            // Get updated healths
-            let adv_health = maze.adventurer.get_health();
-            let creature_health = maze.creature.get_health();
-
-            if adv_health <= 0.0 {
-                println!("The Adventurer has fallen! The Creature wins!");
-                break;
-            }
-            if creature_health <= 0.0 {
-                println!("The Creature has been slain! The Adventurer triumphs!");
+            
+            if maze.check_game_over() {
                 break;
             }
         } else {
