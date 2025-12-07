@@ -14,4 +14,4 @@ Crate rand
 4. `cargo run`
 
 # Paper: An Exploration of Rust as an Object-Oriented Programming Language
-[Rust.pdf](https://github.com/user-attachments/files/24014163/Rust.pdf)
+[Rust_as_OOP_language.pdf](https://github.com/user-attachments/files/24014163/Rust.pdf)
