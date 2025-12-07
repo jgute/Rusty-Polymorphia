@@ -15,10 +15,6 @@ impl Adventurer {
         }
     }
 
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     pub fn get_health(&self) -> f64 {
         self.health
     }
@@ -39,14 +35,3 @@ impl Adventurer {
     }
 }
 
-// Factory trait
-pub trait CharacterFactory {
-    fn create(name: &str) -> Self;
-}
-
-// Implement factory trait for Adventurer
-impl CharacterFactory for Adventurer {
-    fn create(name: &str) -> Self {
-        Self::new(name)
-    }
-}

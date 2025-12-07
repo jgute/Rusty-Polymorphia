@@ -3,16 +3,16 @@ mod creature;
 mod room;
 mod maze;
 mod maze_builder;
+mod character_factory;
 
+use crate::character_factory::{CharacterFactory};
 use adventurer::Adventurer;
 use creature::Creature;
 use maze::Maze;
-use maze_builder::MazeBuilder;
-use std::{thread, time::Duration};
 
 fn main() {
-    let adventurer = Adventurer::new("Bilbo");
-    let creature = Creature::new("Ogre");
+    let adventurer:Adventurer = CharacterFactory::create_adventurer("Bilbo");
+    let creature:Creature  = CharacterFactory::create_creature( "Ogre");
     let mut maze = Maze::builder()
     .num_rooms(4)
     .moving_cost(0.25)
@@ -26,6 +26,10 @@ fn main() {
     // Main game loop
     let mut round = 1;
     loop {
+        if maze.check_game_over() {
+            break;
+        }
+
         println!("==================== ROUND {} ====================", round);
         maze.print_maze();
 
@@ -44,18 +48,18 @@ fn main() {
                 }
             }
 
-            if maze.check_game_over() {
-                break;
-            }
-        } else {
+        } 
+        else {
             println!("No encounter this round. The maze is quiet...");
         }
+
+      
 
         println!("==================================================\n");
         round += 1;
 
         // End condition if it drags too long
-        if round > 50 {
+        if round > 30 {
             println!("The maze grows silent... the hunt goes on forever.");
             break;
         }

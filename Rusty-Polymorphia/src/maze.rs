@@ -42,6 +42,10 @@ impl Maze {
     pub fn move_adventurer(&mut self) {
         for i in 0..self.num_rooms {
             if let Some(a_ref) = self.rooms[i].get_adventurer() {
+                if a_ref.get_health() <= 0.0 {
+                    return;
+                }
+
                 // Clone the adventurer out of the room
                 let mut adventurer = a_ref.clone();
 
@@ -49,15 +53,8 @@ impl Maze {
                 let new_health = adventurer.get_health() - self.moving_cost;
                 adventurer.set_health(new_health);
 
-                // Remove from the old room
-                self.rooms[i].remove_adventurer();
-
-                if adventurer.get_health() <= 0.0 {
-                    // Adventurer dies from movement cost
-                    println!("The Adventurer has fallen! The Creature wins!");
-                    // Do NOT place them in a new room
-                    return;
-                }
+                  // Remove from the old room
+                  self.rooms[i].remove_adventurer();
 
                 // Compute new index
                 let dir = self.one_or_negative_one();
