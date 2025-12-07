@@ -46,24 +46,20 @@ impl Maze {
                     return;
                 }
 
-                // Clone the adventurer out of the room
                 let mut adventurer = a_ref.clone();
 
-                // Apply movement cost to the adventurer's health
                 let new_health = adventurer.get_health() - self.moving_cost;
                 adventurer.set_health(new_health);
 
-                  // Remove from the old room
+         
                   self.rooms[i].remove_adventurer();
 
-                // Compute new index
                 let dir = self.one_or_negative_one();
                 let mut new_index = (i as isize + dir) % self.num_rooms as isize;
                 if new_index < 0 {
                     new_index = (self.num_rooms - 1) as isize;
                 }
 
-                // Place adventurer in new room
                 self.rooms[new_index as usize].set_adventurer(adventurer);
                 break;
             }
@@ -118,7 +114,6 @@ impl Maze {
         adventurer_dead || creature_dead
     }
 
-    /// (Optional helper) Find which room currently has the adventurer.
     pub fn adventurer_room_index(&self) -> Option<usize> {
         for (i, room) in self.rooms.iter().enumerate() {
             if room.get_adventurer().is_some() {

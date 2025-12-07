@@ -5,7 +5,6 @@ pub struct Creature {
 }
 
 impl Creature {
-    // Define the initial health as a constant
     pub const INITIAL_CREATURE_HEALTH: f64 = 5.0;
 
     pub fn new(name: &str) -> Self {

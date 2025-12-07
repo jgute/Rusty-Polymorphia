@@ -23,7 +23,6 @@ fn main() {
     println!("Welcome to the Maze of Polymorphia!");
     println!("An Adventurer and a Creature roam the maze...\n");
 
-    // Main game loop
     let mut round = 1;
     loop {
         if maze.check_game_over() {
@@ -33,11 +32,9 @@ fn main() {
         println!("==================== ROUND {} ====================", round);
         maze.print_maze();
 
-        // Move the adventurer
         println!("Adventurer moves...");
         maze.move_adventurer();
 
-        // Check if they meet
         if maze.in_same_room() {
             println!("They meet in the same room! A battle begins!");
 
@@ -53,16 +50,8 @@ fn main() {
             println!("No encounter this round. The maze is quiet...");
         }
 
-      
-
         println!("==================================================\n");
         round += 1;
-
-        // End condition if it drags too long
-        if round > 30 {
-            println!("The maze grows silent... the hunt goes on forever.");
-            break;
-        }
     }
 
     println!("\nGame Over!");

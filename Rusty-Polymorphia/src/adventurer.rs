@@ -5,8 +5,7 @@ pub struct Adventurer {
 }
 
 impl Adventurer {
-    // Define the initial health as a constant
-    pub const INITIAL_ADVENTURER_HEALTH: f64 = 5.0;
+pub const INITIAL_ADVENTURER_HEALTH: f64 = 5.0;
 
     pub fn new(name: &str) -> Self {
         Self {
@@ -15,6 +14,9 @@ impl Adventurer {
         }
     }
 
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
     pub fn get_health(&self) -> f64 {
         self.health
     }
